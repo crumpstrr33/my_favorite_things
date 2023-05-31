@@ -1,7 +1,7 @@
 import pickle
 from pathlib import Path
 
-from numpy import savez
+import numpy as np
 
 
 def save(
@@ -14,6 +14,7 @@ def save(
     overwrite: bool = False,
     append: bool = True,
     dryrun: bool = False,
+    save_kwargs: dict = {},
     **files: ...,
 ) -> None:
     """
@@ -34,8 +35,8 @@ def save(
     savedir (default "") - Directory to save in. Can be a path. This is added on top of
         `savepath` and after `parents` is applied.  So `parents` moves up the tree and
         `savedir` can move down a different branch.
-    stype (default "npz") - File type, can be either "npz" for saving numpy arrays or
-        "pkl" for saving anything as a pickle file.
+    stype (default "npz") - File type, can be either "npz" or "npy" for saving numpy
+        array(s) or "pkl" for saving anything as a pickle file.
     absolute (default False) - If True, we start in the directory `savepath`, move up it
         `parents` number of times, then append `savedir` to it. If False, we start in
         the directory $CWD/`savepath` and do the same thing.
@@ -51,6 +52,9 @@ def save(
         overwrite=True, this keyword does nothing.
     dryrun (default False) - If True, will not save anything but only print out where
         the save will be to.
+    save_kwargs (default {}) - Keyword arguments to pass to the function that is doing
+        the savings, i.e. np.save, np.savez or pickle.dump. The method np.savez has no
+        extra kwargs, so this is NOT passed to savez.
     files - Kwargs for the python objects to save.
     """
     if not absolute:
@@ -106,7 +110,15 @@ def save(
     # Save as the appropriate type
     match stype:
         case "npz":
-            savez(path / name, **files)
+            np.savez(path / name, **files)
+        case "npy":
+            if len(files.values()) != 1:
+                raise IndexError(
+                    f"Choosing stype={stype} allowing only a single array to be saved "
+                    + f"but there are {len(files.values())} arrays passed as the"
+                    + "`files` kwargs."
+                )
+            np.save(path / name, arr=list(files.values())[0], **save_kwargs)
         case "pkl":
             with open(f"{path / name}.pkl", "wb") as savefile:
-                pickle.dump(files, savefile)
+                pickle.dump(files, savefile, **save_kwargs)
