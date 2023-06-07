@@ -11,7 +11,7 @@ pip install my-favorite-things
 ### save
 #### `save()`
 Import by
-```
+```python
 from my_favorite_things import save
 ```
 This method is used for saving data to a file. You can save as an `.npz` file for numpy array(s) or as a `.pkl` file for dictionaries and other odd python objects. By default, it will not overwrite existing files but instead append a number onto the end of file name (the keywords being, by default, `overwite=False` and `append=True`). You can save relative to your current directory (`absolute=False`) or as an absolute path (`absolute=True`). Addtionally, double check that you're saving to the correct directory with `dryrun=True`. Check the doc string for more info.
@@ -21,7 +21,7 @@ This method is used for saving data to a file. You can save as an `.npz` file fo
 ### ddict
 #### `nested_ddict()`
 Import by
-```
+```python
 from my_favorite_things import nested_ddict
 ```
 This method allows for creating a nested defaultdictionary. This is useful if you have data that is dependent on multiple parameters that are heirarchical. For example, if we do
@@ -35,7 +35,7 @@ d['zero']['one']['two']['three'].append(datum)
 
 #### `format_ddict()`
 Import by
-```
+```python
 from my_favorite_things import format_ddict
 ```
 This method will format your (nested) defaultdictionary into dictionaries. Additionally, it can turns lists in numpy arrays and/or sort the lists too.
