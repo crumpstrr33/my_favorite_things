@@ -7,10 +7,10 @@ Install with
 pip install my-favorite-things
 ```
 
-## Current Methods
+## Current Methods (by file)
 ### save
-#### `save()`
-Import by
+#### `save(name, savedir="", savepath="", stype="npz", absolute=False, parents=0, overwrite=False, append=False, dryrun=False, save_kwargs={}, **kwargs)`
+**Import by**
 ```python
 from my_favorite_things import save
 ```
@@ -18,9 +18,9 @@ This method is used for saving data to a file. You can save as an `.npz` file fo
 
 ---
 
-### ddict
-#### `nested_ddict()`
-Import by
+### ddicts
+#### `nested_ddict(depth, endtype)`
+**Import by**
 ```python
 from my_favorite_things import nested_ddict
 ```
@@ -33,8 +33,8 @@ then we can use it as
 d['zero']['one']['two']['three'].append(datum)
 ```
 
-#### `format_ddict()`
-Import by
+#### `format_ddict(ddict, make_nparr=True, sort_lists=False)`
+**Import by**
 ```python
 from my_favorite_things import format_ddict
 ```
