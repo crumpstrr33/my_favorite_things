@@ -1,3 +1,7 @@
+"""
+Contains method `save` with the flexibility of saving any number of object in various
+ways to a specific directory and with other functions.
+"""
 import pickle
 from pathlib import Path
 
