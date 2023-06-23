@@ -121,7 +121,7 @@ def save(
                     f"Choosing stype={stype} allowing only a single array to be saved "
                     + f"but there are {len(files.values())} arrays passed as the"
                     + "`files` kwargs."
-                )
+                ) from None
             np.save(path / name, arr=list(files.values())[0], **save_kwargs)
         case "pkl":
             with open(f"{path / name}.pkl", "wb") as savefile:
