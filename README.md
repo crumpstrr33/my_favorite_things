@@ -41,3 +41,25 @@ from my_favorite_things import format_ddict
 This method will format your (nested) defaultdictionary into dictionaries. Additionally, it can turns lists in numpy arrays and/or sort the lists too.
 
 ---
+
+### plots
+#### `log_bins(*arrs, num_bins)`
+**Import by**
+```python
+from my_favorite_things import log_bins
+```
+This method is used for binning for histograms logarithmically. In `plt.hist`, setting the keyword `bins` to the output of this function (where `arrs` are the arrays being plotted) and `ax.set_xscale("log")` will give equally spaced bins (for multiple data sets over the logarithmic x-axis).
+
+#### `cumulative_bins(*arrs, num_bins)`
+**Import by**
+```python
+from my_favorite_things import cumulative_bins
+```
+This is similar to the previous method but for a linear scale. When plotting multiple data sets on the same plot, they may have different ranges and, thus, bin sizes. So this method will create the bin values so that the bars of the histogram will all have the same width.
+
+#### `bar_count(ax, counts, labels, label_bars, sort_type, *, bar_params, **kwargs)`
+**Import by**
+```python
+from my_favorite_things import bar_count
+```
+This method will create a bar plot for the data passed using strings as labels (either as the keys of a dictionary passed for `counts` or as a list passed from `labels`) with various conveniences like specifying the format of the label strings or the order of the plotted data.
