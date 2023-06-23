@@ -4,3 +4,6 @@ __pycache__
 # build files
 dist/*
 *.egg-info/*
+
+# test files
+*ipynb
