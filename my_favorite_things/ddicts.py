@@ -38,7 +38,7 @@ def format_ddict(
     # sike, `ddict` can actually be a dict, list or other object
     # but those cases are ONLY during recusive calls
     if isinstance(ddict, (dict, defaultdict)):
-        ddict = {k: format_ddict(v, sort_lists) for k, v in ddict.items()}
+        ddict = {k: format_ddict(v, make_nparr, sort_lists) for k, v in ddict.items()}
     elif isinstance(ddict, list):
         ddict = sorted(ddict) if sort_lists else ddict
         ddict = np.array(ddict) if make_nparr else ddict
