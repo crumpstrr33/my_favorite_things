@@ -23,7 +23,7 @@ def fader(color1: str, color2: str, fraction: float):
     return to_hex((1 - fraction) * color1 + fraction * color2)
 
 
-def multi_fader(colors: Sequence[str], fracs: Sequence[float]):
+def multifader(colors: Sequence[str], fractions: Sequence[float]):
     """
     Allows for fading between mutliple, equally-spaced colors. Returns a list of colors
     whose length is equal to that of `fracs` using the function `fader`.
@@ -43,7 +43,7 @@ def multi_fader(colors: Sequence[str], fracs: Sequence[float]):
     # Get evenly spaced fractions for each color
     color_fracs = np.linspace(0, 1, len(colors))
 
-    for frac in fracs:
+    for frac in fractions:
         # If the frac matches with a color, just use that color
         if frac in color_fracs:
             color = colors[np.where(color_fracs == frac)[0][0]]
