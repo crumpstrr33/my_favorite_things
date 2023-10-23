@@ -1,10 +1,15 @@
 """
 Methods related to plotting, regarding matplotlib.
 """
+from math import gcd
 from typing import Optional, Sequence, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.axes import Axes
+from matplotlib.ticker import FixedLocator, MultipleLocator
+
+LABEL_TYPES = ["all", "explicit"]
 
 
 def cumulative_bins(*arrs: Sequence[float], num_bins: int) -> Sequence[float]:
@@ -117,3 +122,144 @@ def bar_count(
     ax.tick_params(axis="x", rotation=kwargs.get("x_rot", 45))
 
     return bar
+
+
+def histbar(
+    ax: Axes,
+    xs: Sequence[float],
+    ys: Sequence[float],
+    label_type: str = "all",
+    capends: bool = True,
+    fill: bool = False,
+    **kwargs: ...,
+) -> None:
+    """
+    Creates histogram for a set of y-values representing each bin.
+
+    Parameters:
+    ax - Axis object to display plot on.
+    xs - X data.
+    ys - Y data, should be a length one less than `xs` since `xs` represents the limits
+        of each vlaue of `ys`.
+    label_type (default "all") - How to label the x-axis. By default, "all" will go by
+        matplotlib's default. "explicit" will explicitly label each value of `xs` and
+        try to set the minor ticks by the greatest difference between the values of
+        `xs`. This minor tick value can be specified below.
+    cap_ends (default True) - If True, will create vertical lines at each end of the
+        plot. This will, by default, go to a y-value of 0 but can be specified below. If
+        False, will not cap the ends.
+    fill (default False) - If True, will fill in the plot between the line specified
+        by `xs` and `ys` and a specified value below (default 0). If False, there will
+        not be any fill.
+    kwargs - The following keywords can be specified:
+        color (default "#000000") - The color of the line
+        lw (default 2)- The linewidth of the line
+        ls (default "solid") - The linestyle of the line
+        alpha (default 1) - The transparency of the line (between 0 and 1)
+        capends_ymin (default 0) - If `capends=True`, then a vertical line between y[0]
+            and capends_ymin will be created along with one between y[-1] and
+            capends_ymin.
+        label_type_minor_locator - Distance between minor ticks. Default is dynamic, it
+            will try to find the greatest distance between major ticks and use that.
+        fill_color (default "#ffffff") - Color of the fill.
+        fill_hatch (default None) - Hatch type of the fill.
+        fill_alpha (default 1) - Transparency of the fill.
+        fill_limit (default 0) - Maximum/Minimum value of the fill. It is maximum if it
+            is larger than `max(ys)` and is minimum if it is less than `min(ys)`.
+            Otherwise it does something silly.
+    """
+    # Make sure our `label_type` variable is valid
+    if label_type not in LABEL_TYPES:
+        raise ValueError(
+            f'`label_type` is "{label_type}". Should be one of the following: '
+            f"{', '.join(LABEL_TYPES)}."
+        ) from None
+
+    # `xs` define endpoints of each value in `ys`, hence it should be one longer
+    if len(ys) != len(xs) - 1:
+        raise ValueError(
+            f"Length of `ys` should be {len(xs) - 1} but is instead {len(ys)}."
+        )
+
+    # Setting up ticks on x axis
+    if label_type == "explicit":
+        # Setting up xaxis
+        match label_type:
+            case "explicit":
+                # Explicitly label every x point and try to guess at minor locators
+                ax.xaxis.set_major_locator(FixedLocator(xs))
+                minor_locator = kwargs.get("label_type_minor_locator")
+                if minor_locator is None:
+                    # If minor locator (as a multiple) isn't specified, try to find
+                    # maximum value of difference between points
+                    xs_diff = np.diff(xs)
+                    xs_diff_min = np.min(xs_diff)
+                    minor_locator = (
+                        gcd(*(xs_diff / xs_diff_min).astype(int)) * xs_diff_min
+                    )
+                ax.xaxis.set_minor_locator(MultipleLocator(minor_locator))
+
+    # Intialize this variable if fill == True
+    if fill:
+        prev_ymax = 2 * len(ys) * [kwargs.get("fill_limit", 0)]
+
+    # Actually plotting data
+    for ind in range(len(ys)):
+        y = ys[ind]
+        xmin = xs[ind]
+        xmax = xs[ind + 1]
+
+        ax.hlines(
+            y=y,
+            xmin=xmin,
+            xmax=xmax,
+            lw=kwargs.get("lw", 2),
+            ls=kwargs.get("ls", "solid"),
+            color=kwargs.get("color", "#000000"),
+            alpha=kwargs.get("alpha", 1),
+        )
+
+        if ind < len(xs) - 2:
+            ymax = ys[ind + 1]
+            ax.vlines(
+                x=xmax,
+                ymin=y,
+                ymax=ymax,
+                lw=kwargs.get("lw", 2),
+                ls=kwargs.get("ls", "solid"),
+                color=kwargs.get("color", "#000000"),
+                alpha=kwargs.get("alpha", 1),
+            )
+
+        # Filling in area above (or below) line depending on `fill_limit``
+        if fill:
+            ax.fill_between(
+                x=np.repeat(xs, 2)[1:-1],
+                y1=prev_ymax,
+                y2=np.repeat(ys, 2),
+                color=kwargs.get("fill_color", "#ffffff"),
+                hatch=kwargs.get("fill_hatch", None),
+                alpha=kwargs.get("fill_alpha", 1),
+            )
+            prev_ymax = np.repeat(ys, 2)
+
+    # Vertically cap ends of data
+    if capends:
+        ax.vlines(
+            x=xs[0],
+            ymin=kwargs.get("capends_ymin", 0),
+            ymax=ys[0],
+            lw=kwargs.get("lw", 2),
+            ls=kwargs.get("ls", "solid"),
+            color=kwargs.get("color", "#000000"),
+            alpha=kwargs.get("alpha", 1),
+        )
+        ax.vlines(
+            x=xs[-1],
+            ymin=ys[-1],
+            ymax=kwargs.get("capends_ymin", 0),
+            lw=kwargs.get("lw", 2),
+            ls=kwargs.get("ls", "solid"),
+            color=kwargs.get("color", "#000000"),
+            alpha=kwargs.get("alpha", 1),
+        )
