@@ -63,3 +63,19 @@ This is similar to the previous method but for a linear scale. When plotting mul
 from my_favorite_things import bar_count
 ```
 This method will create a bar plot for the data passed using strings as labels (either as the keys of a dictionary passed for `counts` or as a list passed from `labels`) with various conveniences like specifying the format of the label strings or the order of the plotted data.
+
+---
+
+### colors
+#### `fader(color1, color2, fraction)`
+**Import by**
+```python
+from my_favorite_things import fader
+```
+This method will return a color in hex code as a `fraction` between the two given colors `color1` and `color2`.
+
+#### `multifader(colors, fractions)`
+```python
+from my_favorite_things import multifader
+```
+Like above, but intermediate colors can also be defined in the `colors` list. These colors are equally spaced.
