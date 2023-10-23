@@ -7,7 +7,7 @@ import numpy as np
 from matplotlib.colors import to_hex, to_rgb
 
 
-def fader(color1: str, color2: str, fraction: float):
+def fader(color1: str, color2: str, fraction: float) -> str:
     """
     Returns a color that is partway between two other colors.
 
@@ -23,7 +23,7 @@ def fader(color1: str, color2: str, fraction: float):
     return to_hex((1 - fraction) * color1 + fraction * color2)
 
 
-def multifader(colors: Sequence[str], fractions: Sequence[float]):
+def multifader(colors: Sequence[str], fractions: Sequence[float]) -> Sequence[str]:
     """
     Allows for fading between mutliple, equally-spaced colors. Returns a list of colors
     whose length is equal to that of `fracs` using the function `fader`.
