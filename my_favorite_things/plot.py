@@ -181,23 +181,19 @@ def histbar(
             f"Length of `ys` should be {len(xs) - 1} but is instead {len(ys)}."
         )
 
-    # Setting up ticks on x axis
-    if label_type == "explicit":
-        # Setting up xaxis
-        match label_type:
-            case "explicit":
-                # Explicitly label every x point and try to guess at minor locators
-                ax.xaxis.set_major_locator(FixedLocator(xs))
-                minor_locator = kwargs.get("label_type_minor_locator")
-                if minor_locator is None:
-                    # If minor locator (as a multiple) isn't specified, try to find
-                    # maximum value of difference between points
-                    xs_diff = np.diff(xs)
-                    xs_diff_min = np.min(xs_diff)
-                    minor_locator = (
-                        gcd(*(xs_diff / xs_diff_min).astype(int)) * xs_diff_min
-                    )
-                ax.xaxis.set_minor_locator(MultipleLocator(minor_locator))
+    # Setting up xaxis
+    match label_type:
+        case "explicit":
+            # Explicitly label every x point and try to guess at minor locators
+            ax.xaxis.set_major_locator(FixedLocator(xs))
+            minor_locator = kwargs.get("label_type_minor_locator")
+            if minor_locator is None:
+                # If minor locator (as a multiple) isn't specified, try to find
+                # maximum value of difference between points
+                xs_diff = np.diff(xs)
+                xs_diff_min = np.min(xs_diff)
+                minor_locator = gcd(*(xs_diff / xs_diff_min).astype(int)) * xs_diff_min
+            ax.xaxis.set_minor_locator(MultipleLocator(minor_locator))
 
     # Intialize this variable if fill == True
     if fill:
