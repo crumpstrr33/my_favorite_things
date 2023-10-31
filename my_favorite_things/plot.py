@@ -134,7 +134,10 @@ def histbar(
     **kwargs: ...,
 ) -> None:
     """
-    Creates histogram for a set of y-values representing each bin.
+    Creates histogram for a set of y-values representing each bin. This is very similar
+    to matplotlib's `step` method. That is, I made this before I realized that
+    existed. Granted, this method allows for more customization, e.g. spacing-filling,
+    so this method will continue to exist.
 
     Parameters:
     ax - Axis object to display plot on.
