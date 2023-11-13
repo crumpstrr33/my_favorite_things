@@ -9,7 +9,7 @@ import numpy as np
 from matplotlib.axes import Axes
 from matplotlib.ticker import FixedLocator, MultipleLocator
 
-LABEL_TYPES = ["all", "explicit"]
+LABEL_TYPES = [None, "explicit"]
 
 
 def cumulative_bins(*arrs: Sequence[float], num_bins: int) -> Sequence[float]:
@@ -128,7 +128,7 @@ def histbar(
     ax: Axes,
     xs: Sequence[float],
     ys: Sequence[float],
-    label_type: str = "all",
+    label_type: Optional[str] = None,
     capends: bool = True,
     fill: bool = False,
     **kwargs: ...,
@@ -144,9 +144,9 @@ def histbar(
     xs - X data.
     ys - Y data, should be a length one less than `xs` since `xs` represents the limits
         of each vlaue of `ys`.
-    label_type (default "all") - How to label the x-axis. By default, "all" will go by
-        matplotlib's default. "explicit" will explicitly label each value of `xs` and
-        try to set the minor ticks by the greatest difference between the values of
+    label_type (default "all") - How to label the x-axis. By default, None will not
+        touch the ticks at all. And "explicit" will explicitly label each value of `xs`
+        and try to set the minor ticks by the greatest difference between the values of
         `xs`. This minor tick value can be specified below.
     cap_ends (default True) - If True, will create vertical lines at each end of the
         plot. This will, by default, go to a y-value of 0 but can be specified below. If
@@ -186,6 +186,8 @@ def histbar(
 
     # Setting up xaxis
     match label_type:
+        case None:
+            pass
         case "explicit":
             # Explicitly label every x point and try to guess at minor locators
             ax.xaxis.set_major_locator(FixedLocator(xs))
