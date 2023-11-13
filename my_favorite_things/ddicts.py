@@ -43,3 +43,45 @@ def format_ddict(
         ddict = sorted(ddict) if sort_lists else ddict
         ddict = np.array(ddict) if make_nparr else ddict
     return ddict
+
+
+def pprint_nested_dict(
+    d: dict,
+    tab: int = 2,
+    k_format: str = "{}",
+    v_format: str = "{}",
+    sort: bool = True,
+    offset: int = 0,
+):
+    """
+    Prints out a nested dictionary, giving a new line and indentation.
+
+    Parameters:
+    d - Dictionary to print out
+    tab (default 2) - Tab width, i.e. how many spaces per depth into the dictionary
+    k_format (default "{}") - How to format the final key
+    v_format (default "{}") - How to format the value of this final key
+    sort (default True) - If True, will sort the final key
+    offset (default 0) - The initial indentation
+    """
+    if isinstance(list(d.values())[0], dict):
+        # If there's still more nesting, then run recursively
+        for k, v in d.items():
+            print(f"{' ' * offset}{k}:")
+
+            pprint_nested_dict(
+                d=v,
+                tab=tab,
+                k_format=k_format,
+                v_format=v_format,
+                sort=sort,
+                indentation=offset + tab,
+            )
+    else:
+        # Otherwise, we've reached the end, so print it out
+        if sort:
+            for k in sorted(d.keys()):
+                print(f"{' ' * offset}{k_format.format(k)}: {v_format.format(d[k])}")
+        else:
+            for k, v in d.items():
+                print(f"{' ' * offset}{k_format.format(k)}: {v_format.format(v)}")
