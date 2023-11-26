@@ -28,17 +28,23 @@ d['zero']['one']['two']['three'].append(datum)
 #### `format_ddict(ddict, make_nparr=True, sort_lists=False)`
 This method will format your (nested) defaultdictionary into dictionaries. Additionally, it can turns lists in numpy arrays and/or sort the lists too.
 
+#### `pprint_nested_dict(d, tab=2, k_format="", v_format="", sort=True, indentation=0)`
+Similar to Python's `pprint`, this will print out a dictionary such that each successive nested layer is more indented. It also has a means to format the final keys and values either with a method that they are passed to or an f-string.
+
 ---
 
 ### plots
-#### `log_bins(*arrs, num_bins)`
-This method is used for binning for histograms logarithmically. In `plt.hist`, setting the keyword `bins` to the output of this function (where `arrs` are the arrays being plotted) and `ax.set_xscale("log")` will give equally spaced bins (for multiple data sets over the logarithmic x-axis).
-
 #### `cumulative_bins(*arrs, num_bins)`
 This is similar to the previous method but for a linear scale. When plotting multiple data sets on the same plot, they may have different ranges and, thus, bin sizes. So this method will create the bin values so that the bars of the histogram will all have the same width.
 
+#### `log_bins(*arrs, num_bins)`
+This method is used for binning for histograms logarithmically. In `plt.hist`, setting the keyword `bins` to the output of this function (where `arrs` are the arrays being plotted) and `ax.set_xscale("log")` will give equally spaced bins (for multiple data sets over the logarithmic x-axis).
+
 #### `bar_count(ax, counts, labels, label_bars, sort_type, *, bar_params, **kwargs)`
 This method will create a bar plot for the data passed using strings as labels (either as the keys of a dictionary passed for `counts` or as a list passed from `labels`) with various conveniences like specifying the format of the label strings or the order of the plotted data.
+
+#### `histbar(ax, xs, ys, label_type=None, capends=None, fill=False, **kwargs)`
+Creates a step plot at the between the values in `xs` for the values in `ys`. So the former has $n+1$ values if the latter has $n$ values. Can fill in the plot via Matplotlib's `fill_between` using the boolean keyword `fill` and label the specific values of `xs` if they aren't uniform using `label_type`.
 
 ---
 
