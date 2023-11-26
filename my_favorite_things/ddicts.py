@@ -52,7 +52,7 @@ def pprint_nested_dict(
     v_format: Union[str, Callable[..., str]] = "",
     sort: bool = True,
     indentation: int = 0,
-):
+) -> None:
     """
     Prints out a nested dictionary, giving a new line and indentation.
 
