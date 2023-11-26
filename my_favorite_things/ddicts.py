@@ -4,7 +4,7 @@ from the collections package.
 """
 
 from collections import defaultdict
-from typing import Type, Callable
+from typing import Callable, Type, Union
 
 import numpy as np
 
@@ -49,9 +49,9 @@ def pprint_nested_dict(
     d: dict,
     tab: int = 2,
     k_format: Union[str, Callable[..., str]] = "",
-    v_format: str = "",
+    v_format: Union[str, Callable[..., str]] = "",
     sort: bool = True,
-    offset: int = 0,
+    indentation: int = 0,
 ):
     """
     Prints out a nested dictionary, giving a new line and indentation.
@@ -66,12 +66,12 @@ def pprint_nested_dict(
         a string represesnting its formatting or as a callable that takes a value as its
         sole argument.
     sort (default True) - If True, will sort the final key
-    offset (default 0) - The initial indentation
+    indentation (default 0) - The initial indentation
     """
     if isinstance(list(d.values())[0], dict):
         # If there's still more nesting, then run recursively
         for k, v in d.items():
-            print(f"{' ' * offset}{k}:")
+            print(f"{' ' * indentation}{k}:")
 
             pprint_nested_dict(
                 d=v,
@@ -79,20 +79,20 @@ def pprint_nested_dict(
                 k_format=k_format,
                 v_format=v_format,
                 sort=sort,
-                indentation=offset+ tab
+                indentation=indentation + tab,
             )
     else:
         # Otherwise, we've reached the end, so print it out
-        if sort:
-            keys = sorted(d.keys())
-        else:
-            keys = d.keys()
+        keys = sorted(d.keys()) if sort else d.keys()
 
+        # Either format with method, with f-string or not at all
         for k in keys:
             if callable(k_format):
                 k_str = k_format(k)
             elif k_format:
                 k_str = k_format.format(k)
+            else:
+                k_str = k
 
             if callable(v_format):
                 v_str = v_format(d[k])
@@ -100,4 +100,4 @@ def pprint_nested_dict(
                 v_str = v_format.format(d[k])
             else:
                 v_str = d[k]
-            print(f"{' ' * offset}{k_str}: {v_str}")
+            print(f"{' ' * indentation}{k_str}: {v_str}")
