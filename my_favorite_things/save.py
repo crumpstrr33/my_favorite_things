@@ -19,6 +19,7 @@ def save(
     append: bool = True,
     dryrun: bool = False,
     save_kwargs: dict = {},
+    tab_offset: int = 0
     **files: ...,
 ) -> None:
     """
@@ -59,8 +60,10 @@ def save(
     save_kwargs (default {}) - Keyword arguments to pass to the function that is doing
         the savings, i.e. np.save, np.savez or pickle.dump. The method np.savez has no
         extra kwargs, so this is NOT passed to savez.
+    tab_offset (default 0) - How many spaces to offset the print statement by.
     files - Kwargs for the python objects to save.
     """
+    tab = " " * tab_offset
     if not absolute:
         # Relative path
         path = Path.cwd() / savepath
@@ -95,19 +98,19 @@ def save(
                 name += f"_{ind}"
                 break
         print(
-            f"Saving with appended integer, {ind}, since file already exists. Delete "
-            + "file or set `overwrite=True` to save without integer."
+            f"{tab}Saving with appended integer, {ind}, since file already exists. "
+            "Delete file or set `overwrite=True` to save without integer."
         )
     elif file_exist and (not overwrite and not append):
         # Otherwise don't save at all
         print(
-            "File of the same name already exists. Delete file, set `overwrite=True` "
-            + "or `append=True`. Aborting..."
+            f"{tab}File of the same name already exists. Delete file, set "
+            "`overwrite=True` or `append=True`. Aborting..."
         )
         return
 
     dr_txt = " This is a dryrun!" if dryrun else ""
-    print(f"Saving to {path / (name + f'.{stype}')}.{dr_txt}")
+    print(f"{tab}Saving to {path / (name + f'.{stype}')}.{dr_txt}")
     if dryrun:
         return
 
