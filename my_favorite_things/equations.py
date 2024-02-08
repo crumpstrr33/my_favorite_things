@@ -8,7 +8,7 @@ from numba import njit, types
 
 
 @njit
-def cubic_solver(a: float, b: float, c: float, d: float) -> list[complex]:
+def cubic_equation(a: float, b: float, c: float, d: float) -> list[complex]:
     """
     Solves the cubic equation:
 
@@ -16,8 +16,11 @@ def cubic_solver(a: float, b: float, c: float, d: float) -> list[complex]:
 
     Following the formula found here:
         https://en.wikipedia.org/wiki/Cubic_equation#General_cubic_formula
+    Of the solutions, either all three are real or only one is.
 
-    Returns list of the 3 solutions. Either all three are real or only one is.
+    Returns (
+        list of the 3 solutions
+    )
     """
     # Numba casts floats as numpy.float64's. One can do e.g. (-3)^(1/2) with python
     # floats but not with numpy floats. So explicitly cast as complex types.
