@@ -37,7 +37,7 @@ def cubic_equation(a: float, b: float, c: float, d: float) -> list[complex]:
     # Normally, + or - doesn't matter because D is made via a square root. But if one
     # sign causes C=0, then we must go with the other. So we check here.
     sign = -1
-    if abs(Delta1 - D) < 1e-6:
+    if abs(Delta1 - D) < 1e-3:
         sign = +1
     C = ((Delta1 + sign * D) / 2) ** (1 / 3)
 
