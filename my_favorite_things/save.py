@@ -2,6 +2,7 @@
 Contains method `save` with the flexibility of saving any number of object in various
 ways to a specific directory and with other functions.
 """
+
 import pickle
 from pathlib import Path
 
@@ -19,7 +20,7 @@ def save(
     append: bool = True,
     dryrun: bool = False,
     save_kwargs: dict = {},
-    tab_offset: int = 0
+    tab_offset: int = 0,
     **files: ...,
 ) -> None:
     """
