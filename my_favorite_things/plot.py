@@ -1,13 +1,14 @@
 """
 Methods related to plotting, regarding matplotlib.
 """
+
 from math import gcd
 from typing import Optional, Sequence, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.axes import Axes
-from matplotlib.ticker import FixedLocator, MultipleLocator
+from matplotlib.ticker import FixedLocator, Locator, MultipleLocator, ScalarFormatter
 
 LABEL_TYPES = [None, "explicit"]
 
@@ -106,9 +107,7 @@ def bar_count(
                 f"`sort_type` should be either 'desc' or 'asc', not {sort_type}."
             )
         values, labels = zip(
-            *sorted(
-                zip(values, labels), key=lambda x: x[0], reverse=sort_type == "desc"
-            )
+            *sorted(zip(values, labels), key=lambda x: x[0], reverse=sort_type == "desc")
         )
 
     bar_params = bar_params if bar_params is not None else {}
@@ -264,3 +263,57 @@ def histbar(
             color=kwargs.get("color", "#000000"),
             alpha=kwargs.get("alpha", 1),
         )
+
+
+class ScientificLocator(Locator):
+    """
+    Locator to split up axis values equally regardless of their order of
+    magnitude. That is, for example, if whether the range is from 0 to 3e6 or
+    from 0 to 3e9, the tick values will be equally spaced (modulo the 10^6 or
+    10^9 multiplicative factors, respectively).
+    """
+
+    def __init__(self, step: float = 0.1):
+        """
+        Parameters:
+        step - Value to split up the order of magnitude by. Think of this as
+            the input to MultipleLocator except order of magnitude is ignored.
+        """
+        self.step = step
+
+    def __call__(self):
+        # Get limits of axis
+        vmin, vmax = self.axis.get_view_interval()
+        # Finds order of magnitude from the absolute maximum of the ranges
+        max_abs = max(abs(vmin), abs(vmax))
+        # Edge case if all values are 0...
+        if max_abs == 0:
+            return [0]
+        exponent = np.floor(np.log10(max_abs))
+        # Use exponent to get the spacing between ticks
+        tick_spacing = self.step * 10**exponent
+
+        # Find values for the minimum/maximum of the tick, i.e. one tick below
+        # the minimum of the data and one tick above the maximum of the data
+        min_tick = np.floor(vmin / tick_spacing) * tick_spacing
+        max_tick = np.ceil(vmax / tick_spacing) * tick_spacing
+        # Find total number of ticks based on the tick spacing
+        num_ticks = int((max_tick - min_tick) / tick_spacing) + 1
+        # Use it to get equidistant values for ticks
+        return np.linspace(min_tick, max_tick, num_ticks)
+
+
+class ScientificFormatter(ScalarFormatter):
+    """
+    Forces the axis tick labels to be in scientific notation.
+    """
+
+    def __init__(self, useMathText: bool = True):
+        """
+        Parameters:
+        useMathText (default True) - Value to be passed to the `useMathText`
+            argument of `ScalarFormatter`. Makes the scientific notation "fancy".
+        """
+        super().__init__(useMathText=useMathText)
+        self.set_scientific(True)
+        self.set_powerlimits((0, 0))

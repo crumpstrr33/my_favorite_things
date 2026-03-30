@@ -46,6 +46,12 @@ This method will create a bar plot for the data passed using strings as labels (
 #### `histbar(ax, xs, ys, label_type=None, capends=None, fill=False, **kwargs)`
 Creates a step plot at the between the values in `xs` for the values in `ys`. So the former has $n+1$ values if the latter has $n$ values. Can fill in the plot via Matplotlib's `fill_between` using the boolean keyword `fill` and label the specific values of `xs` if they aren't uniform using `label_type`.
 
+#### `ScientificLocator(step=0.1)`
+This is a `Locator` class that will equally space ticks as `step`$\cdot 10^p$ where $p$ is the order of magnitude of the axis. That is, this is like `MultipleLocator` modulo the order of magnitude.
+
+#### `ScientificFormatter(useMathText=True)`
+An accompanying `Formatter` class to `ScientificLocator`. This class will force the axis to be in scientific notation.
+
 ---
 
 ### colors
