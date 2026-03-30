@@ -1,6 +1,7 @@
 """
 Fast and straightforward implementation of specific formulas
 """
+
 from cmath import exp as cexp
 from math import pi
 
@@ -18,9 +19,9 @@ def cubic_equation(a: float, b: float, c: float, d: float) -> list[complex]:
         https://en.wikipedia.org/wiki/Cubic_equation#General_cubic_formula
     Of the solutions, either all three are real or only one is.
 
-    Returns (
-        list of the 3 solutions
-    )
+    Once compiled by numba, takes about 0.5 microseconds.
+
+    Returns list of the 3 solutions
     """
     # Numba casts floats as numpy.float64's. One can do e.g. (-3)^(1/2) with python
     # floats but not with numpy floats. So explicitly cast as complex types.
