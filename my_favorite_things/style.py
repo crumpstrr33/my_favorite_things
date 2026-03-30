@@ -99,7 +99,7 @@ def format_plots():
     plt.subplots = _styled_subplots
 
 
-def numpy_print(precision: int = 6, linewidth: int = 1000, sign: str = " "):
+def format_numpy(precision: int = 6, linewidth: int = 1000, sign: str = " "):
     """
     Sets numpy print options to chosen values. These are just values I have
     chosen that work well for me in Jupyter notebooks.
