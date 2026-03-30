@@ -86,7 +86,8 @@ def save(
             f"`parents` must equal a nonnegative int but it is: parents={parents}."
         ) from None
     path = path / savedir
-    path.mkdir(parents=True, exist_ok=True)
+    if not dryrun:
+        path.mkdir(parents=True, exist_ok=True)
 
     file_exist = (path / (name + f".{stype}")).is_file()
     # If file already exist, save with appending number on the end, if append=True
