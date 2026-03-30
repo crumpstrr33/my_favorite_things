@@ -60,3 +60,12 @@ This method will return a color in hex code as a `fraction` between the two give
 
 #### `multifader(colors, fractions)`
 Like above, but intermediate colors can also be defined in the `colors` list. These colors are equally spaced.
+
+---
+
+### style
+#### `format_plots()`
+Changes the default values for Matplotlib plots.
+
+#### `format_numpy(precision=6, linewidth=1000, sign=" ")`
+Changes the default print options for Numpy.
