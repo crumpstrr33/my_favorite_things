@@ -270,18 +270,35 @@ class ScientificLocator(Locator):
     Locator to split up axis values equally regardless of their order of
     magnitude. That is, for example, if whether the range is from 0 to 3e6 or
     from 0 to 3e9, the tick values will be equally spaced (modulo the 10^6 or
-    10^9 multiplicative factors, respectively).
+    10^9 multiplicative factors, respectively). Additionally, it makes sure
+    there are a minimum number of ticks present.
     """
 
-    def __init__(self, step: float = 0.1):
+    def __init__(self, step: float = 0.1, num_tick_limit: int = 5):
         """
         Parameters:
-        step - Value to split up the order of magnitude by. Think of this as
-            the input to MultipleLocator except order of magnitude is ignored.
+        step (default 0.1) - Value to split up the order of magnitude by. Think
+            of this as the input to MultipleLocator except order of magnitude is
+            ignored.
+        num_tick_limit (default 5) - Minimum number of ticks. If the class would
+            return less than `num_tick_limit` based on its calculation of
+            `exponent` in `self._get_tick_info`, then it will rerun with an
+            exponent one less than before. It will continue to do this until
+            we reach a number of ticks equal to or greater than `num_tick_limit`.
         """
         self.step = step
+        self.num_tick_limit = num_tick_limit
 
     def __call__(self):
+        num_ticks = 0
+        exponent_offset = 0
+        while num_ticks < self.num_tick_limit:
+            min_tick, max_tick, num_ticks = self._get_tick_info(exponent_offset)
+            exponent_offset += 1
+        # Use it to get equidistant values for ticks
+        return np.linspace(min_tick, max_tick, num_ticks)
+
+    def _get_tick_info(self, exponent_offset=0):
         # Get limits of axis
         vmin, vmax = self.axis.get_view_interval()
         # Finds order of magnitude from the absolute maximum of the ranges
@@ -289,7 +306,7 @@ class ScientificLocator(Locator):
         # Edge case if all values are 0...
         if max_abs == 0:
             return [0]
-        exponent = np.floor(np.log10(max_abs))
+        exponent = np.floor(np.log10(max_abs)) - exponent_offset
         # Use exponent to get the spacing between ticks
         tick_spacing = self.step * 10**exponent
 
@@ -299,8 +316,7 @@ class ScientificLocator(Locator):
         max_tick = np.ceil(vmax / tick_spacing) * tick_spacing
         # Find total number of ticks based on the tick spacing
         num_ticks = int((max_tick - min_tick) / tick_spacing) + 1
-        # Use it to get equidistant values for ticks
-        return np.linspace(min_tick, max_tick, num_ticks)
+        return min_tick, max_tick, num_ticks
 
 
 class ScientificFormatter(ScalarFormatter):
